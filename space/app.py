@@ -3,6 +3,7 @@ import torch
 from model_loader import model, device, transforms, example_list
 import gradio as gr
 import PIL
+import numpy as np
 
 # function to perform inference
 @spaces.GPU
