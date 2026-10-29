@@ -42,12 +42,12 @@ def load_model() -> torch.nn.Module:
       classes=1                   # 1 output channel for crack probability
   )
 
-  # load_state_dict, move model to device, set model to eval mode
+  # load_state_dict, set model to eval mode
   model.load_state_dict(state_dict)
   model.eval()
 
   # ZeroGPU-compatible module-level placement
-  model.to("cuda")
+  # model.to("cuda")
 
   return model
 
