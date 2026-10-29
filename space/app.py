@@ -1,6 +1,6 @@
 import spaces
 import torch
-from model_loader import model, device, transforms, example_list
+from model_loader import model, transforms, example_list
 import gradio as gr
 import PIL
 import numpy as np
@@ -22,8 +22,14 @@ def generate(model: torch.nn.Module, img: torch.Tensor) -> torch.Tensor:
     torch.Tensor
         Raw output logits tensor from the model.
   """
-  logits = model(img)
-  return logits
+  # This function runs in the ZeroGPU worker
+  img = img.to('cuda')
+
+  with torch.inference_mode():
+    logits = model(img)
+    
+  # Return a CPU tensor across the worker boundary
+  return logits.cpu()
 
 # function to run once submit is clicked
 def on_click(img: PIL.Image.Image | None) -> np.ndarray | None:
@@ -42,17 +48,16 @@ def on_click(img: PIL.Image.Image | None) -> np.ndarray | None:
   """
   if img:
     # Transform
-    img = transforms(img).unsqueeze(0).to(device)
+    img = transforms(img).unsqueeze(0)
 
-    # Inference
+    # GPU inference happens inside the decorated function
     logits = generate(model, img)
 
     # predicted mask:
     mask = (logits.sigmoid() > 0.5).to(torch.int64)
 
     # Tensor -> NumPy
-    mask = mask.squeeze((0, 1)).cpu().numpy()
-
+    mask = mask.squeeze((0, 1)).numpy()
     # 0/1 -> 0/255
     mask = (mask * 255).astype("uint8")
 

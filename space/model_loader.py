@@ -9,14 +9,6 @@ import segmentation_models_pytorch as smp
 BASE_PATH = Path(__file__).resolve().parent
 example_list = list(BASE_PATH.joinpath('examples').rglob('*.jpg'))
 
-# check available device
-if torch.cuda.is_available():
-  device = 'cuda'
-elif torch.backends.mps.is_available():
-  device = 'mps'
-else:
-  device = 'cpu'
-
 transforms = T.Compose([
     T.ToImage(),
     T.ToDtype(dtype=torch.float32, scale=True),
@@ -40,7 +32,7 @@ def load_model() -> torch.nn.Module:
   )
 
   # load weights
-  state_dict = torch.load(f=weights_path, map_location=device)
+  state_dict = torch.load(f=weights_path, map_location='cpu')
 
   # initialize unet with resnet18 encoder backbone
   model = smp.Unet(
@@ -52,8 +44,10 @@ def load_model() -> torch.nn.Module:
 
   # load_state_dict, move model to device, set model to eval mode
   model.load_state_dict(state_dict)
-  model.to(device)
   model.eval()
+
+  # ZeroGPU-compatible module-level placement
+  model.to("cuda")
 
   return model
 
