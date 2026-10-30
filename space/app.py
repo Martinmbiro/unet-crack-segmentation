@@ -22,9 +22,9 @@ def generate(model: torch.nn.Module, img: torch.Tensor) -> torch.Tensor:
     torch.Tensor
         Raw output logits tensor from the model.
   """
-  # This function runs in the ZeroGPU worker
+  # This function runs in the ZeroGPU worker (which is CUDA)
   img = img.to('cuda')
-  # model.to('cuda')
+  model.to('cuda')
 
   with torch.inference_mode():
     logits = model(img)

@@ -45,7 +45,6 @@ def load_model() -> torch.nn.Module:
   # load_state_dict, set model to eval mode
   model.load_state_dict(state_dict)
   model.eval()
-  model.to('cuda')
 
   return model
 
