@@ -24,11 +24,11 @@ def generate(model: torch.nn.Module, img: torch.Tensor) -> torch.Tensor:
   """
   # This function runs in the ZeroGPU worker
   img = img.to('cuda')
-  model.to('cuda')
+  # model.to('cuda')
 
   with torch.inference_mode():
     logits = model(img)
-    
+
   # Return a CPU tensor across the worker boundary
   return logits.cpu()
 

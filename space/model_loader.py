@@ -45,9 +45,7 @@ def load_model() -> torch.nn.Module:
   # load_state_dict, set model to eval mode
   model.load_state_dict(state_dict)
   model.eval()
-
-  # ZeroGPU-compatible module-level placement
-  # model.to("cuda")
+  model.to('cuda')
 
   return model
 
