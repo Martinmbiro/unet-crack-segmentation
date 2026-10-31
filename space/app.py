@@ -7,8 +7,6 @@ import numpy as np
 
 # move model to cuda at module level
 model.to('cuda')
-print("Model parameter device:",
-    next(model.parameters()).device)
 
 # function to perform inference
 @spaces.GPU
@@ -17,21 +15,15 @@ def generate(img: torch.Tensor) -> torch.Tensor:
 
     Parameters
     ----------
-        A preprocessed 4D image tensor of shape (1, C, H, W) on the target device.
+        A preprocessed 4D image tensor of shape (1, C, H, W) 
 
     Returns
     -------
     torch.Tensor
         Raw output logits tensor from the model.
   """
-  # This function runs in the ZeroGPU worker (which is CUDA)
+  # This function runs in the ZeroGPU worker
   img = img.to('cuda')
-  
-  print("Model parameter device:",
-      next(model.parameters()).device)
-
-  print("Input tensor device:",
-        img.device)
 
   with torch.inference_mode():
     logits = model(img)
