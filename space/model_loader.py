@@ -1,3 +1,4 @@
+import spaces
 import torch
 import os
 from pathlib import Path
@@ -48,4 +49,8 @@ def load_model() -> torch.nn.Module:
 
   return model
 
+# Construct model at module level
 model = load_model()
+
+# Register model placement with ZeroGPU
+model.to("cuda")

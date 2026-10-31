@@ -5,9 +5,6 @@ import gradio as gr
 import PIL
 import numpy as np
 
-# place the model to cuda
-model.to('cuda')
-
 # function to perform inference
 @spaces.GPU
 def generate(model: torch.nn.Module, img: torch.Tensor) -> torch.Tensor:
