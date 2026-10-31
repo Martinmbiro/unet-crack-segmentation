@@ -15,6 +15,7 @@ def generate(img: torch.Tensor) -> torch.Tensor:
 
     Parameters
     ----------
+    img : torch.Tensor
         A preprocessed 4D image tensor of shape (1, C, H, W) 
 
     Returns
