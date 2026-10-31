@@ -6,6 +6,8 @@ import PIL
 import numpy as np
 
 model.to('cuda')
+print("Model parameter device:",
+    next(model.parameters()).device)
 
 # function to perform inference
 @spaces.GPU
