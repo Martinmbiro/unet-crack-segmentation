@@ -5,6 +5,8 @@ import gradio as gr
 import PIL
 import numpy as np
 
+model.to('cuda')
+
 # function to perform inference
 @spaces.GPU
 def generate(model: torch.nn.Module, img: torch.Tensor) -> torch.Tensor:
@@ -24,6 +26,12 @@ def generate(model: torch.nn.Module, img: torch.Tensor) -> torch.Tensor:
   """
   # This function runs in the ZeroGPU worker (which is CUDA)
   img = img.to('cuda')
+  
+  print("Model parameter device:",
+      next(model.parameters()).device)
+
+  print("Input tensor device:",
+        img.device)
 
   with torch.inference_mode():
     logits = model(img)
