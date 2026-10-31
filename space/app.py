@@ -5,20 +5,18 @@ import gradio as gr
 import PIL
 import numpy as np
 
+# move model to cuda at module level
 model.to('cuda')
 print("Model parameter device:",
     next(model.parameters()).device)
 
 # function to perform inference
 @spaces.GPU
-def generate(model: torch.nn.Module, img: torch.Tensor) -> torch.Tensor:
+def generate(img: torch.Tensor) -> torch.Tensor:
   """Performs GPU-accelerated forward pass inference on an input image tensor.
 
     Parameters
     ----------
-    model : torch.nn.Module
-        The loaded U-Net segmentation model.
-    img : torch.Tensor
         A preprocessed 4D image tensor of shape (1, C, H, W) on the target device.
 
     Returns
@@ -61,7 +59,7 @@ def on_click(img: PIL.Image.Image | None) -> np.ndarray | None:
     img = transforms(img).unsqueeze(0)
 
     # GPU inference happens inside the decorated function
-    logits = generate(model, img)
+    logits = generate(img)
 
     # predicted mask:
     mask = (logits.sigmoid() > 0.5).to(torch.int64)
